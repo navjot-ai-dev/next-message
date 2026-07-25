@@ -41,7 +41,7 @@ const UserSchema : Schema<User> = new Schema({
         type: String,
         required: [true,"Email is required"],
         unique: true,
-        match:[/ ^[^\s@]+@[^\s@]+\.[^\s@]+$ / , 'please use a valid email address']
+        match:[/^[^\s@]+@[^\s@]+\.[^\s@]+$/ , 'please use a valid email address']
     },
     password:{
         type: String,
@@ -67,6 +67,6 @@ const UserSchema : Schema<User> = new Schema({
 
 });
 
-const UserModel = (mongoose.models.User as mongoose.Model<User> ) || mongoose.models<User>('User', UserSchema);
+const UserModel = (mongoose.models.User as mongoose.Model<User> ) || mongoose.model<User>('User', UserSchema);
 
-export default UserModel;n
+export default UserModel;
