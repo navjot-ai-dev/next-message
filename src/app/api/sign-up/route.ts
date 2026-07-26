@@ -28,6 +28,76 @@ export async function POST(request: Request) {
          }
     )}
 
+    const existingUserByEmail = await UserModel.findOne(
+        {
+            email,
+            isVerified: true
+        }
+    )
+
+
+     
+    const verifyCode = Math.floor(100000+ Math.random()
+* 900000).toString()
+
+    if(existingUserByEmail) {
+
+           if(existingUserByEmail.isVerified) {
+            return Response.json({
+                success: false,
+                message: "Email already exists"
+            },
+             {
+                status:400
+             }
+        )
+           }else {
+            existingUserByEmail.username = username
+            existingUserByEmail.password = await bcrypt.hash(password, 10)
+            existingUserByEmail.verifyCode = verifyCode
+            const expiryDate = new Date()
+            expiryDate.setDate(expiryDate.getDate() + 1)
+            existingUserByEmail.verifyCodeExpiry = expiryDate
+           }
+
+          }  else {
+        const hashedPassword = await bcrypt.hash(password, 10)
+        const expiryDate = new Date()
+        expiryDate.setDate(expiryDate.getDate() + 1)
+
+        const newUser = new UserModel({
+            username,
+            email,
+            password: hashedPassword,
+            verifyCode,
+            verifyCodeExpiry: expiryDate,
+            isVerified: false,
+            isAcceptedMessage: true,
+            messages: []
+
+        })
+
+        await newUser.save()
+    }
+     //send verifaication email
+     const emailResponse = await sendVerificationEmail(email, verifyCode ,username)
+
+     if(!emailResponse.success) {
+         return Response.json({
+             success: false,
+             message: emailResponse.message
+         }, {
+             status: 500
+         })
+     }
+
+     return Response.json({
+             success: true,
+             message: "User registered successfully. Please check your email for verification code."
+         }, {
+             status: 201
+         })
+
     } catch (error) {
         console.error('Error registering user' , error)
         return Response.json({
