@@ -10,20 +10,18 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                email: { label: "Email", type: "email" },
+                email: { label: "Email", type: "text"  },
                 password: { label: "Password", type: "password" }
             },
-            async authorize(credentials) {
+            async authorize(credentials: any): Promise<any> {
                 await dbConnect();
-                const user = await UserModel.findOne({ email: credentials?.email });
-                if (!user) {
-                    throw new Error("Invalid email or password");
+                try {
+                    
+                    
+                } catch (err:any) {
+                     throw new Error(err);
                 }
-                const isPasswordCorrect = await bcrypt.compare(credentials?.password || "", user.password);
-                if (!isPasswordCorrect) {
-                    throw new Error("Invalid email or password");
-                }
-                return user;
+                
             }
         })
     ]
