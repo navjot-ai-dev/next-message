@@ -22,7 +22,21 @@ export const authOptions: NextAuthOptions = {
                             { username: credentials.identifier },
                         ]
                     })
-                    
+                    if (!user) {
+                        throw new Error('User not found');
+                    }
+
+                    if (!user.isVerified) {
+                        throw new Error('Please verify your email before logging in');
+                    }
+
+                    const isMatch = await bcrypt.compare(credentials.password, user.password);
+                    if (!isMatch) {
+                        throw new Error('Invalid password');
+                    } else {
+                        return user;
+                    }
+
                 } catch (err:any) {
                      throw new Error(err);
                 }
