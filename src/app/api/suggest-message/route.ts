@@ -10,7 +10,9 @@ export async function POST(req: Request) {
         {
       role: "system",
       content: `
-        You are a message suggestion AI.
+       You are a message writing assistant.
+
+        Generate 3 different message suggestions based on the user's idea.
 
         Always return ONLY valid JSON.
         Never change the keys.
@@ -23,12 +25,16 @@ export async function POST(req: Request) {
           "suggestion3": ""
         }
 
-        Fill all three values with short, natural chat replies.
+         Rules:
+        - Convert short input into a meaningful short message.
+        - Make each suggestion different.
+        - Keep messages natural and emotional.
+        - Do not explain anything.
       `,
     },
     {
       role: "user",
-      content: `Suggest replies for: "${message}"`,
+      content: `Suggest messages for: "${message}"`,
     },
       ],
     });
