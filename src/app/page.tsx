@@ -10,6 +10,7 @@ import { toast } from "@/components/ui/toast"
 import { useRouter } from 'next/navigation';
 import { signUpSchema } from '@/schemas/signUpSchema';
 import axios, {AxiosError} from 'axios'
+import { ApiResponse } from '@/types/ApiResponse';
 
 const page = () => {
   const [username, setusername] = useState('');
@@ -18,10 +19,7 @@ const page = () => {
   const [isSubmitting, setisSubmitting] = useState(false)
 
   const debouncedUsername = useDebounceValue(username , 300)
- const Toast = toast.add({
-            title: "Event created",
-            description: "Sunday, December 3 at 9:00 AM",
-       });
+
   const router = useRouter();
 
   //zod implementation
@@ -41,16 +39,37 @@ const page = () => {
         setusernameMessage('')
         try {
          const response = await axios.get(`/api/check-username?username=${debouncedUsername}`);
-         console.log(response)
+         
          setusernameMessage(response.data.message)
         } catch (error) {
-          
+          const axiosError = error as AxiosError<ApiResponse>
+          setusernameMessage(
+            axiosError.response?.data.message ?? 'Error checking username'
+          )
+        } finally{
+          setisCheckingUsername(false)
         }
       }
     }
+    checkUsernameUnique()
   },
-[debouncedUsername]
+    [debouncedUsername]
 )
+
+  const onSubmit = async (data: z.infer<typeof signUpSchema>) =>
+    {
+      setisSubmitting(true)
+      try {
+        const response = await axios.post('/api/sign-up', data);
+        toast.add({
+          title: "Account created",
+          description: response.data.message
+        });
+        router.replace(`/verify/${username}`)
+      } catch (error) {
+        
+      }
+    }
 
   return (
     <div></div>
