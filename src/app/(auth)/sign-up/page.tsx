@@ -137,7 +137,7 @@ const Page = () => {
       
 
       {!isCheckingUsername && usernameMessage && (
-        <p className="text-sm text-muted-foreground">
+        <p className={`text-sm text-muted-foreground ${usernameMessage === "Username is available" ? 'text-green-700':'text-red-700'}`}>
           {usernameMessage}
         </p>
       )}
