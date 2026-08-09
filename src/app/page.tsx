@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import * as z from 'zod'
 import Link from 'next/link'
 import { useEffect, useState } from 'react';
@@ -11,6 +11,9 @@ import { useRouter } from 'next/navigation';
 import { signUpSchema } from '@/schemas/signUpSchema';
 import axios, {AxiosError} from 'axios'
 import { ApiResponse } from '@/types/ApiResponse';
+import { Field, FieldError, FieldGroup, FieldLabel, } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const page = () => {
   const [username, setusername] = useState('');
@@ -93,6 +96,133 @@ const page = () => {
           <p className='mb-4'>Sign up to start sending anonymous messages </p>
         </div>
         
+<form
+  onSubmit={form.handleSubmit(onSubmit)}
+  className="space-y-5"
+>
+  <FieldGroup>
+    {/* Username */}
+    <Controller
+      name="username"
+      control={form.control}
+      render={({ field, fieldState }) => (
+        <Field data-invalid={fieldState.invalid}>
+          <FieldLabel htmlFor={field.name}>
+            Username
+          </FieldLabel>
+
+          <Input
+            {...field}
+            id={field.name}
+            placeholder="Enter username"
+            autoComplete="username"
+            onChange={(event) => {
+              field.onChange(event);
+              setusername(event.target.value);
+            }}
+            aria-invalid={fieldState.invalid}
+          />
+
+          {isCheckingUsername && (
+            <p className="text-sm text-muted-foreground">
+              Checking username...
+            </p>
+          )}
+
+          {!isCheckingUsername && usernameMessage && (
+            <p className="text-sm text-muted-foreground">
+              {usernameMessage}
+            </p>
+          )}
+
+          {fieldState.invalid && (
+            <FieldError
+              errors={[fieldState.error]}
+            />
+          )}
+        </Field>
+      )}
+    />
+
+    {/* Email */}
+    <Controller
+      name="email"
+      control={form.control}
+      render={({ field, fieldState }) => (
+        <Field data-invalid={fieldState.invalid}>
+          <FieldLabel htmlFor={field.name}>
+            Email
+          </FieldLabel>
+
+          <Input
+            {...field}
+            id={field.name}
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            aria-invalid={fieldState.invalid}
+          />
+
+          {fieldState.invalid && (
+            <FieldError
+              errors={[fieldState.error]}
+            />
+          )}
+        </Field>
+      )}
+    />
+
+    {/* Password */}
+    <Controller
+      name="password"
+      control={form.control}
+      render={({ field, fieldState }) => (
+        <Field data-invalid={fieldState.invalid}>
+          <FieldLabel htmlFor={field.name}>
+            Password
+          </FieldLabel>
+
+          <Input
+            {...field}
+            id={field.name}
+            type="password"
+            placeholder="Enter password"
+            autoComplete="new-password"
+            aria-invalid={fieldState.invalid}
+          />
+
+          {fieldState.invalid && (
+            <FieldError
+              errors={[fieldState.error]}
+            />
+          )}
+        </Field>
+      )}
+    />
+  </FieldGroup>
+
+  <Button
+    type="submit"
+    className="w-full"
+    disabled={isSubmitting}
+  >
+    {isSubmitting
+      ? "Creating account..."
+      : "Sign Up"}
+  </Button>
+</form>
+
+<p className="mt-6 text-center text-sm text-muted-foreground">
+  Already have an account?{" "}
+  <Link
+    href="/sign-in"
+    className="font-medium text-primary hover:underline"
+  >
+    Sign in
+  </Link>
+</p>
+
+
       </div>
     </div>
   )
