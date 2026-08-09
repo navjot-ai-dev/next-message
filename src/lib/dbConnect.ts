@@ -1,44 +1,36 @@
 import mongoose from "mongoose";
 import dns from "dns/promises";
 
-// Force Node to use Google's DNS — must be set before any DNS lookups happen
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+dns.setServers(["10.37.221.136"]);
 
 type ConnectionObject = {
-    isConnected?: number
-}
+  isConnected?: number;
+};
 
-const connection: ConnectionObject = {}
+const connection: ConnectionObject = {};
 
 async function dbConnect(): Promise<void> {
+  if (connection.isConnected) {
+    console.log("Already connected to database");
+    return;
+  }
 
-    console.log(process.env.MONGODB_URI);
-    if (connection.isConnected) {
-        console.log("Already connected to database");
-        return
+  try {
+    const MONGODB_URI = process.env.MONGODB_URI;
+
+    if (!MONGODB_URI) {
+      throw new Error("MONGODB_URI is not defined");
     }
-    try {
-        // Test DNS before mongoose connects
-        const srv = await dns.resolveSrv(
-            "_mongodb._tcp.cluster1.wlw452f.mongodb.net"
-        );
 
-        console.log("Mongo DNS:", srv);
+    const db = await mongoose.connect(MONGODB_URI);
 
-        const db = await mongoose.connect(process.env.MONGODB_URI || '')
-        console.log(db);
+    connection.isConnected = db.connections[0].readyState;
 
-        connection.isConnected = db.connections[0].readyState
-
-        console.log("Connected to database");
-
-    } catch (error) {
-
-        console.error("Error connecting to database:", error);
-
-        process.exit(1); // Exit the process with an error code
-
-    } 
+    console.log("Connected to database");
+  } catch (error) {
+    console.error("Error connecting to database:", error);
+    throw error;
+  }
 }
 
 export default dbConnect;
