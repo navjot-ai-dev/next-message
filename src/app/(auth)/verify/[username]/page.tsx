@@ -42,7 +42,7 @@ const VerifyAccount = () => {
           description:  response.data.message
         });
 
-        router.replace('sign-in')
+        router.replace('/sign-in')
 
         } catch (error) {
             console.error("error in signup of user", error);
