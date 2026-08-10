@@ -118,6 +118,7 @@ const Page = () => {
         id={field.name}
         placeholder="Enter username"
         autoComplete="username"
+        spellCheck={false}
         onChange={(event) => {
   const value = event.target.value;
 
@@ -167,6 +168,7 @@ const Page = () => {
             type="email"
             placeholder="you@example.com"
             autoComplete="email"
+            spellCheck={false}
             aria-invalid={fieldState.invalid}
           />
 

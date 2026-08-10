@@ -1,152 +1,146 @@
-
 "use client";
 
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
-import axios, { AxiosError } from "axios";
-
-import { signInSchema } from "@/schemas/signInSchema";
-import { ApiResponse } from "@/types/ApiResponse";
-
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-
+import Link from "next/link";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { signInSchema } from "@/schemas/signInSchema";
+import { signIn } from "next-auth/react";
 
-const SignInPage = () => {
+const Page = () => {
   const router = useRouter();
 
+  // Zod Implementation
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
     },
   });
 
+  const { isSubmitting } = form.formState;
+
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     try {
-      const response = await axios.post<ApiResponse>(
-        "/api/sign-in",
-        data
-      );
+      const result = await signIn("credentials", {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password,
+      });
 
-      console.log(response.data);
+      if (result?.error) {
+        toast.add({
+          title: "Login Failed",
+          type: "error",
+          description:
+            result.error === "CredentialsSignin"
+              ? "Incorrect email or password"
+              : result.error,
+        });
+        return;
+      }
 
-      router.replace("/");
+      if (result?.ok) {
+        router.replace("/dashboard");
+        router.refresh(); // Refreshes server components to apply new session
+      }
     } catch (error) {
-      const axiosError = error as AxiosError<ApiResponse>;
-
-      console.error(
-        axiosError.response?.data.message ||
-          "Error signing in"
-      );
+      toast.add({
+        title: "Error",
+        type: "error",
+        description: "An unexpected error occurred. Please try again.",
+      });
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-md rounded-xl border bg-background p-6 shadow-lg">
-        <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold">
-            Welcome Back
-          </h1>
-
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold">Welcome Back</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Sign in to your account
           </p>
         </div>
 
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FieldGroup>
-            {/* Username / Email */}
-            <Field
-              data-invalid={
-                !!form.formState.errors.email
-              }
-            >
-              <FieldLabel htmlFor="identifier">
-                Username or Email
-              </FieldLabel>
-
-              <Input
-                {...form.register("email")}
-                id="identifier"
-                placeholder="Enter username or email"
-                autoComplete="username"
-              />
-
-              {form.formState.errors.email && (
-                <FieldError
-                  errors={[
-                    form.formState.errors.email,
-                  ]}
-                />
+            {/* Identifier Field */}
+            <Controller
+              name="identifier"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Email or Username</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type="text"
+                    placeholder="you@example.com or username"
+                    spellCheck={false}
+                    autoComplete="email"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError>{fieldState.error?.message}</FieldError>
+                  )}
+                </Field>
               )}
-            </Field>
+            />
 
-            {/* Password */}
-            <Field
-              data-invalid={
-                !!form.formState.errors.password
-              }
-            >
-              <FieldLabel htmlFor="password">
-                Password
-              </FieldLabel>
-
-              <Input
-                {...form.register("password")}
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                autoComplete="current-password"
-              />
-
-              {form.formState.errors.password && (
-                <FieldError
-                  errors={[
-                    form.formState.errors.password,
-                  ]}
-                />
+            {/* Password Field */}
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type="password"
+                    placeholder="Enter password"
+                    autoComplete="current-password"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError>{fieldState.error?.message}</FieldError>
+                  )}
+                </Field>
               )}
-            </Field>
+            />
           </FieldGroup>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={form.formState.isSubmitting}
-          >
-            {form.formState.isSubmitting
-              ? "Signing in..."
-              : "Sign In"}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+              </>
+            ) : (
+              "Sign In"
+            )}
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <button
-            type="button"
-            onClick={() => router.push("/sign-up")}
+          <Link
+            href="/sign-up"
             className="font-medium text-primary hover:underline"
           >
-            Sign Up
-          </button>
+            Sign up
+          </Link>
         </p>
       </div>
     </div>
   );
 };
 
-export default SignInPage;
+export default Page;
