@@ -24,7 +24,7 @@ export const OTPEmail = ({
   otp = "482913",
   expiresInMinutes = 10,
 }: OTPEmailProps) => {
-  const digits = username.split("");
+  const digits = otp.split("");
 
   return (
     <Html>
@@ -156,7 +156,7 @@ export const OTPEmail = ({
           }
         `}</style>
       </Head>
-      <Preview>Your next-message verification code is {username}</Preview>
+      <Preview>Your next-message verification code is {otp}</Preview>
       <Body>
         <Container className="container">
           <Section className="logo-wrap">
@@ -167,7 +167,7 @@ export const OTPEmail = ({
             <Heading className="heading">Verify it's you</Heading>
 
             <Text className="subtext">
-              Hi {otp}, use the code below to sign in to{" "}
+              Hi {username}, use the code below to sign in to{" "}
               <strong>next-message</strong>.
             </Text>
 
