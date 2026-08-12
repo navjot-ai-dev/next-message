@@ -42,9 +42,9 @@ const Page = () => {
           description:
             result.error === "CredentialsSignin"
               ? "Incorrect email or password"
-              : "An unexpected error occurred. Please try again.",
+              : "An unexpected error occurred check your password and username. Please try again.",
         });
-        return;
+        
       }
 
       if (result?.ok) {

@@ -3,6 +3,7 @@ import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toast";
+import Navbar from "@/components/Navbar";
 
 const geist = Geist({ 
   subsets: ["latin"], 
@@ -22,6 +23,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <AuthProvider>
+          <Navbar />
           {children}
           <Toaster />
         </AuthProvider>
