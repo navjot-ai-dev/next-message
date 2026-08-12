@@ -80,9 +80,7 @@ const Page = () => {
           toast.add({
             title: "Signup failed",
             type: "error",
-            description: errorMessage ?? 'Error signing up',
-            
-           
+            description: errorMessage ?? 'Error signing up', 
           });
           setisSubmitting(false)
           
