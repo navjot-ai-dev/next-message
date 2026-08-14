@@ -9,14 +9,13 @@ import { useRouter } from "next/navigation";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogIn, KeyRound } from "lucide-react";
 import { signInSchema } from "@/schemas/signInSchema";
 import { signIn } from "next-auth/react";
 
 const Page = () => {
   const router = useRouter();
 
-  // Zod Implementation
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -42,14 +41,17 @@ const Page = () => {
           description:
             result.error === "CredentialsSignin"
               ? "Incorrect email or password"
-              : "An unexpected error occurred check your password and username. Please try again.",
+              : "An unexpected error occurred. Please check your details.",
         });
-        
       }
 
       if (result?.ok) {
+        toast.add({
+          title: "Welcome Back! 👋",
+          description: "Signed in successfully.",
+        });
         router.replace("/dashboard");
-        router.refresh(); // Refreshes server components to apply new session
+        router.refresh();
       }
     } catch (error) {
       toast.add({
@@ -61,16 +63,21 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold">Welcome Back</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Sign in to your account
+    <div className="flex-1 flex justify-center items-center p-4 sm:p-6 bg-background">
+      <div className="w-full max-w-md p-6 sm:p-8 space-y-6 bg-card rounded-xl border border-border/80 shadow-md">
+        
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-2">
+            <LogIn className="w-6 h-6" />
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Welcome Back</h1>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Sign in to access your anonymous messages dashboard
           </p>
         </div>
 
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FieldGroup>
             {/* Identifier Field */}
             <Controller
@@ -87,6 +94,7 @@ const Page = () => {
                     spellCheck={false}
                     autoComplete="email"
                     aria-invalid={fieldState.invalid}
+                    className="h-10"
                   />
                   {fieldState.invalid && (
                     <FieldError>{fieldState.error?.message}</FieldError>
@@ -106,9 +114,10 @@ const Page = () => {
                     {...field}
                     id={field.name}
                     type="password"
-                    placeholder="Enter password"
+                    placeholder="••••••••"
                     autoComplete="current-password"
                     aria-invalid={fieldState.invalid}
+                    className="h-10"
                   />
                   {fieldState.invalid && (
                     <FieldError>{fieldState.error?.message}</FieldError>
@@ -118,26 +127,30 @@ const Page = () => {
             />
           </FieldGroup>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button type="submit" className="w-full h-10 gap-2 font-semibold" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Signing In...</span>
               </>
             ) : (
-              "Sign In"
+              <>
+                <KeyRound className="h-4 w-4" />
+                <span>Sign In</span>
+              </>
             )}
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <div className="pt-2 text-center text-xs sm:text-sm text-muted-foreground">
           Don't have an account?{" "}
           <Link
             href="/sign-up"
-            className="font-medium text-primary hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
-            Sign up
+            Create an account
           </Link>
-        </p>
+        </div>
       </div>
     </div>
   );

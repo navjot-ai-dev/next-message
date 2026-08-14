@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,6 @@ import {
   Check, 
   Loader2, 
   RefreshCw, 
-  Trash2, 
   Mail, 
   MessageSquare, 
   Power, 
@@ -30,17 +29,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import MessageCard from "@/components/MessageCard";
 
 const Dashboard = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -52,7 +41,6 @@ const Dashboard = () => {
 
   const { data: session } = useSession();
 
-  // ✅ 1. Fix: Added defaultValues so `acceptMessages` starts as `false` instead of `undefined`
   const form = useForm<{ acceptMessages: boolean }>({
     resolver: zodResolver(acceptMessageSchema),
     defaultValues: {
@@ -167,9 +155,9 @@ const Dashboard = () => {
 
   if (!session || !session.user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 min-h-[60vh] text-center">
         <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
-        <p className="text-muted-foreground">Please sign in to access your dashboard.</p>
+        <p className="text-muted-foreground max-w-sm">Please sign in to access your dashboard and manage messages.</p>
       </div>
     );
   }
@@ -188,22 +176,23 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 md:p-8 bg-background rounded-xl border max-w-6xl shadow-sm space-y-8">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your feedback link and incoming messages.
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Dashboard</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
+            Manage your unique link and incoming anonymous messages.
           </p>
         </div>
+        
         <Button
           variant="outline"
           size="sm"
           onClick={() => fetchMessages(true)}
           disabled={isLoading}
-          className="w-fit"
+          className="w-full sm:w-auto h-9"
         >
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -216,30 +205,37 @@ const Dashboard = () => {
 
       {/* Analytics Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="shadow-none">
+        <Card className="shadow-xs border-muted/80">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Total Messages
             </CardTitle>
-            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <MessageSquare className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{messages.length}</div>
+            <div className="text-2xl sm:text-3xl font-extrabold">{messages.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Messages received to date</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none">
+        <Card className="shadow-xs border-muted/80">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Status
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Message Acceptance
             </CardTitle>
-            <Power className="h-4 w-4 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <Power className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent className="flex items-center justify-between">
-            <Badge variant={acceptMessages ? "default" : "secondary"}>
-              {acceptMessages ? "Active" : "Paused"}
-            </Badge>
-            {/* ✅ 2. Fix: Fallback `?? false` ensures strictly boolean value passed */}
+            <div>
+              <Badge variant={acceptMessages ? "default" : "secondary"} className="mb-1">
+                {acceptMessages ? "Accepting Messages" : "Paused"}
+              </Badge>
+              <p className="text-xs text-muted-foreground">Toggle availability</p>
+            </div>
             <Switch
               checked={acceptMessages ?? false}
               onCheckedChange={handleSwitchChange}
@@ -248,40 +244,47 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-none sm:col-span-2 lg:col-span-1">
+        <Card className="shadow-xs border-muted/80 sm:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Link Sharing
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Your Public URL
             </CardTitle>
-            <LinkIcon className="h-4 w-4 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <LinkIcon className="h-4 w-4" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-xs text-muted-foreground truncate">{profileUrl}</div>
+            <div className="text-xs font-mono text-muted-foreground truncate bg-muted/40 p-2 rounded-md border border-border/40">
+              {profileUrl}
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Shareable Link Bar */}
-      <Card className="bg-muted/30 border-dashed shadow-none">
+      {/* Shareable Link Box */}
+      <Card className="bg-card border-dashed border-primary/30 shadow-xs">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold">Your Unique Public Link</CardTitle>
+          <CardTitle className="text-base sm:text-lg font-semibold flex items-center gap-2">
+            <LinkIcon className="w-4 h-4 text-primary" />
+            Your Shareable Feedback Link
+          </CardTitle>
           <CardDescription>
-            Share this link to receive anonymous messages from anyone.
+            Share this link on social media or with friends to receive anonymous feedback.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
             <Input
               type="text"
               value={profileUrl}
               readOnly
-              className="bg-background font-mono text-sm"
+              className="bg-muted/20 font-mono text-xs sm:text-sm h-10 flex-1"
             />
-            <Button onClick={copyToClipboard} variant="default" className="shrink-0">
+            <Button onClick={copyToClipboard} variant="default" className="shrink-0 h-10 px-5">
               {copied ? (
                 <>
                   <Check className="h-4 w-4 mr-2" />
-                  Copied
+                  Copied!
                 </>
               ) : (
                 <>
@@ -294,95 +297,53 @@ const Dashboard = () => {
         </CardContent>
       </Card>
 
-      <Separator />
+      <Separator className="my-6" />
 
       {/* Messages Section */}
-      <div>
-        <h2 className="text-xl font-bold mb-4">Received Messages</h2>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg sm:text-xl font-bold tracking-tight">Received Messages ({messages.length})</h2>
+        </div>
 
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Skeleton className="h-36 w-full rounded-xl" />
-            <Skeleton className="h-36 w-full rounded-xl" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Skeleton className="h-40 w-full rounded-xl" />
+            <Skeleton className="h-40 w-full rounded-xl" />
+            <Skeleton className="h-40 w-full rounded-xl" />
           </div>
         ) : messages.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {messages.map((message) => {
               const msgId = message._id.toString();
-              const isDeletingThis = deletingId === msgId;
-
               return (
-                <Card key={msgId} className="flex flex-col justify-between hover:shadow-md transition-shadow">
-                  <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                    <Badge variant="outline" className="text-xs font-normal">
-                      Received
-                    </Badge>
-
-                    {/* Delete Confirmation Modal */}
-                    <AlertDialog>
-                      <AlertDialogTrigger>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8 w-8"
-                          disabled={isDeletingThis}
-                          type="button"
-                        >
-                          {isDeletingThis ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. This message will be permanently removed.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteMessage(msgId)}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </CardHeader>
-
-                  <CardContent className="pt-2">
-                    <p className="text-sm text-foreground whitespace-pre-wrap mb-4">
-                      {message.content}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(message.createdAt).toLocaleDateString(undefined, {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
-                  </CardContent>
-                </Card>
+                <MessageCard
+                  key={msgId}
+                  message={message}
+                  onMessageDelete={handleDeleteMessage}
+                  isDeleting={deletingId === msgId}
+                />
               );
             })}
           </div>
         ) : (
-          <div className="text-center py-12 border border-dashed rounded-xl bg-muted/10">
-            <Mail className="mx-auto h-10 w-10 text-muted-foreground mb-3 opacity-60" />
-            <p className="text-base font-semibold text-foreground">No messages yet</p>
-            <p className="text-sm text-muted-foreground">
-              Share your link above to start receiving feedback.
-            </p>
+          <div className="text-center py-12 px-4 border border-dashed rounded-xl bg-muted/10 space-y-3">
+            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground mx-auto">
+              <Mail className="h-6 w-6 opacity-70" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-base font-semibold text-foreground">No messages yet</p>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
+                Share your link with your network to start receiving anonymous feedback and questions!
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={copyToClipboard} className="mt-2">
+              <Copy className="h-3.5 w-3.5 mr-2" />
+              Copy Shareable Link
+            </Button>
           </div>
         )}
       </div>
+
     </div>
   );
 };

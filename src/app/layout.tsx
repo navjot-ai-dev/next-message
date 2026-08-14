@@ -21,10 +21,10 @@ export default function RootLayout({
       className={cn("font-sans", geist.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-screen flex flex-col bg-background text-foreground antialiased">
         <AuthProvider>
           <Navbar />
-          {children}
+          <div className="flex-1 flex flex-col">{children}</div>
           <Toaster />
         </AuthProvider>
       </body>
