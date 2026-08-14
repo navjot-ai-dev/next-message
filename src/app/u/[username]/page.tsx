@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios, { AxiosError } from "axios";
-import { Send, Sparkles, Loader2, MessageSquare, ShieldCheck, Heart } from "lucide-react";
+import { Send, Sparkles, Loader2, MessageSquare, ShieldCheck } from "lucide-react";
 
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "@/components/ui/toast";
@@ -77,7 +77,7 @@ const PublicProfilePage = () => {
     setIsSuggesting(true);
     try {
       const promptIdea = currentContent.trim() || "friendly feedback or compliments";
-      
+
       const response = await axios.post("/api/suggest-message", { message: promptIdea });
       const data = response.data;
 
@@ -104,24 +104,24 @@ const PublicProfilePage = () => {
 
   return (
     <div className="flex-1 flex flex-col justify-center max-w-2xl w-full mx-auto my-8 sm:my-16 px-4 sm:px-6">
-      
+
       {/* Outer Gradient Card Frame */}
-      <div className="p-0.5 rounded-3xl bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 shadow-2xl">
+      <div className="p-0.5 rounded-3xl bg-gradient-to-r from-blue-500/30 via-cyan-500/30 to-teal-500/30 shadow-2xl">
         <Card className="border-none bg-card/95 backdrop-blur-xl rounded-[23px] overflow-hidden">
-          
+
           <CardHeader className="text-center space-y-3 pb-4 pt-8 bg-gradient-to-b from-primary/5 to-transparent">
-            
+
             {/* Avatar Header Ring */}
             <div className="relative mx-auto w-14 h-14">
-              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-600 opacity-80 blur-xs" />
-              <div className="relative w-14 h-14 rounded-2xl bg-background border border-primary/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-md">
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-teal-500 opacity-80 blur-xs" />
+              <div className="relative w-14 h-14 rounded-2xl bg-background border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-md">
                 <MessageSquare className="w-7 h-7" />
               </div>
             </div>
 
             <div className="space-y-1.5">
               <CardTitle className="text-2xl sm:text-3xl font-black tracking-tight">
-                Send a Message to <span className="bg-gradient-to-r from-indigo-600 to-pink-600 bg-clip-text text-transparent">@{username}</span>
+                Send a Message to <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">@{username}</span>
               </CardTitle>
               <CardDescription className="text-xs sm:text-sm flex items-center justify-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
@@ -138,15 +138,16 @@ const PublicProfilePage = () => {
                   <Textarea
                     placeholder="Write your secret message or feedback here..."
                     rows={4}
-                    className="resize-none text-base p-4 rounded-xl border-border/80 focus-visible:ring-indigo-500 bg-muted/20"
+                    spellCheck={false}
+                    className="resize-none text-base p-4 rounded-xl border-border/80 focus-visible:ring-blue-500 bg-muted/20"
                     {...register("content")}
                   />
-                  
+
                   {/* Progress bar and counter */}
                   <div className="flex items-center justify-between px-1 pt-1.5">
                     <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full transition-all duration-300 ${charPercent > 90 ? 'bg-destructive' : 'bg-indigo-600'}`}
+                      <div
+                        className={`h-full transition-all duration-300 ${charPercent > 90 ? 'bg-destructive' : 'bg-blue-600'}`}
                         style={{ width: `${charPercent}%` }}
                       />
                     </div>
@@ -168,10 +169,10 @@ const PublicProfilePage = () => {
                   variant="outline"
                   onClick={generateAiSuggestions}
                   disabled={isSuggesting}
-                  className="w-full sm:w-auto h-11 px-5 border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 font-semibold gap-2"
+                  className="w-full sm:w-auto h-11 px-5 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 font-semibold gap-2"
                 >
                   {isSuggesting ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+                    <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
                   ) : (
                     <Sparkles className="h-4 w-4 text-amber-500" />
                   )}
@@ -179,10 +180,10 @@ const PublicProfilePage = () => {
                 </Button>
 
                 {/* Submit Button */}
-                <Button 
-                  type="submit" 
-                  disabled={isSending || !currentContent.trim()} 
-                  className="w-full sm:w-auto h-11 px-7 bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold shadow-lg shadow-indigo-500/25 gap-2"
+                <Button
+                  type="submit"
+                  disabled={isSending || !currentContent.trim()}
+                  className="w-full sm:w-auto h-11 px-7 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 hover:opacity-95 text-white font-bold shadow-lg shadow-blue-500/25 gap-2"
                 >
                   {isSending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -208,9 +209,9 @@ const PublicProfilePage = () => {
                         key={idx}
                         type="button"
                         onClick={() => handleSelectSuggestion(item)}
-                        className="p-3.5 text-left text-xs sm:text-sm rounded-xl border border-border/80 bg-muted/40 hover:bg-indigo-500/10 hover:border-indigo-500/40 transition-all border-dashed group flex items-start gap-2.5"
+                        className="p-3.5 text-left text-xs sm:text-sm rounded-xl border border-border/80 bg-muted/40 hover:bg-blue-500/10 hover:border-blue-500/40 transition-all border-dashed group flex items-start gap-2.5"
                       >
-                        <Badge variant="outline" className="text-[10px] uppercase font-bold shrink-0 mt-0.5 border-indigo-500/30 text-indigo-600 dark:text-indigo-400">
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold shrink-0 mt-0.5 border-blue-500/30 text-blue-600 dark:text-blue-400">
                           Idea #{idx + 1}
                         </Badge>
                         <span className="text-muted-foreground group-hover:text-foreground italic leading-relaxed">

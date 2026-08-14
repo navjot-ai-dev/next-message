@@ -188,7 +188,7 @@ const Dashboard = () => {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">Dashboard</h1>
-            <Badge variant="outline" className="border-indigo-500/30 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10">
+            <Badge variant="outline" className="border-blue-500/30 text-blue-600 dark:text-blue-400 bg-blue-500/10">
               Overview
             </Badge>
           </div>
@@ -202,12 +202,12 @@ const Dashboard = () => {
           size="sm"
           onClick={() => fetchMessages(true)}
           disabled={isLoading}
-          className="w-full sm:w-auto h-10 border-border/80 hover:border-indigo-500/40 font-medium gap-2"
+          className="w-full sm:w-auto h-10 border-border/80 hover:border-blue-500/40 font-medium gap-2"
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
           ) : (
-            <RefreshCw className="h-4 w-4 text-indigo-500" />
+            <RefreshCw className="h-4 w-4 text-blue-500" />
           )}
           Refresh Feed
         </Button>
@@ -222,7 +222,7 @@ const Dashboard = () => {
             <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Total Inbox
             </CardTitle>
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <MessageSquare className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -238,7 +238,7 @@ const Dashboard = () => {
             <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Accepting Status
             </CardTitle>
-            <div className="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
+            <div className="w-9 h-9 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-400">
               <Power className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -266,7 +266,7 @@ const Dashboard = () => {
             <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Public Link
             </CardTitle>
-            <div className="w-9 h-9 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-600 dark:text-pink-400">
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
               <LinkIcon className="h-4 w-4" />
             </div>
           </CardHeader>
@@ -278,7 +278,7 @@ const Dashboard = () => {
               href={profileUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
             >
               <span>Preview your public page</span>
               <ExternalLink className="w-3 h-3" />
@@ -288,7 +288,7 @@ const Dashboard = () => {
       </div>
 
       {/* Shareable Link Box */}
-      <div className="p-0.5 rounded-2xl bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 shadow-md">
+      <div className="p-0.5 rounded-2xl bg-gradient-to-r from-blue-500/30 via-cyan-500/30 to-teal-500/30 shadow-md">
         <Card className="border-none bg-card/90 backdrop-blur-xl rounded-[15px]">
           <CardHeader className="pb-3">
             <CardTitle className="text-base sm:text-lg font-bold flex items-center gap-2">
@@ -305,11 +305,11 @@ const Dashboard = () => {
                 type="text"
                 value={profileUrl}
                 readOnly
-                className="bg-muted/40 font-mono text-xs sm:text-sm h-11 flex-1 border-border/80 focus-visible:ring-indigo-500"
+                className="bg-muted/40 font-mono text-xs sm:text-sm h-11 flex-1 border-border/80 focus-visible:ring-blue-500"
               />
               <Button 
                 onClick={copyToClipboard} 
-                className="shrink-0 h-11 px-6 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold shadow-md shadow-indigo-500/20"
+                className="shrink-0 h-11 px-6 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-md shadow-blue-500/20"
               >
                 {copied ? (
                   <>
@@ -363,7 +363,7 @@ const Dashboard = () => {
           </div>
         ) : (
           <div className="text-center py-16 px-4 border border-dashed rounded-2xl bg-muted/20 space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto shadow-xs">
+            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-xs">
               <Mail className="h-7 w-7" />
             </div>
             <div className="space-y-1">
@@ -375,7 +375,7 @@ const Dashboard = () => {
             <Button 
               onClick={copyToClipboard} 
               variant="outline"
-              className="mt-2 border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 font-semibold"
+              className="mt-2 border-blue-500/30 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 font-semibold"
             >
               <Copy className="h-4 w-4 mr-2" />
               Copy Shareable Link

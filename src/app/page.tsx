@@ -40,9 +40,9 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background relative overflow-hidden bg-grid-pattern">
       
-      {/* Dynamic Ambient Background Light Blobs */}
-      <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 blur-[120px] pointer-events-none -z-10 rounded-full" />
-      <div className="absolute top-[600px] right-[-100px] w-[500px] h-[500px] bg-gradient-to-br from-violet-500/15 to-indigo-500/15 blur-[100px] pointer-events-none -z-10 rounded-full" />
+      {/* Dynamic Ambient Background Light Blobs (Blue / Cyan / Teal) */}
+      <div className="absolute top-[-100px] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-tr from-blue-600/20 via-cyan-500/20 to-teal-500/20 blur-[120px] pointer-events-none -z-10 rounded-full" />
+      <div className="absolute top-[600px] right-[-100px] w-[500px] h-[500px] bg-gradient-to-br from-blue-500/15 to-cyan-500/15 blur-[100px] pointer-events-none -z-10 rounded-full" />
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 flex flex-col items-center justify-center space-y-20">
         
@@ -50,7 +50,7 @@ export default function Home() {
         <section className="flex flex-col items-center text-center space-y-8 max-w-3xl">
           
           {/* Top Pill Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 text-xs sm:text-sm font-semibold tracking-wide shadow-sm hover:scale-105 transition-transform cursor-default">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-500/10 via-cyan-500/10 to-teal-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-semibold tracking-wide shadow-xs hover:scale-105 transition-transform cursor-default">
             <Sparkles className="w-4 h-4 text-amber-500 animate-spin" style={{ animationDuration: '4s' }} />
             <span>Powered by Smart AI Message Assistant</span>
           </div>
@@ -59,7 +59,7 @@ export default function Home() {
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight leading-[1.1]">
               Share Thoughts <br className="hidden sm:inline" />
-              <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 bg-clip-text text-transparent">
                 Completely Anonymously
               </span>
             </h1>
@@ -70,18 +70,18 @@ export default function Home() {
 
           {/* Interactive Preview Card Carousel */}
           <div className="w-full max-w-md my-2">
-            <div className="p-0.5 rounded-2xl bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 shadow-xl">
+            <div className="p-0.5 rounded-2xl bg-gradient-to-r from-blue-500/30 via-cyan-500/30 to-teal-500/30 shadow-xl">
               <Card className="border-none bg-card/90 backdrop-blur-xl rounded-[15px] p-2">
                 <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                    <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
                       <Mail className="w-4 h-4" />
                     </div>
                     <div>
                       <CardTitle className="text-xs font-bold text-foreground text-left">
                         {sampleMessages[currentIdx].title}
                       </CardTitle>
-                      <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold uppercase tracking-wider">
+                      <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-wider">
                         {sampleMessages[currentIdx].badge}
                       </span>
                     </div>
@@ -101,7 +101,7 @@ export default function Home() {
                   {sampleMessages.map((_, idx) => (
                     <div 
                       key={idx} 
-                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIdx ? 'w-6 bg-indigo-600' : 'w-1.5 bg-muted-foreground/30'}`}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentIdx ? 'w-6 bg-blue-600' : 'w-1.5 bg-muted-foreground/30'}`}
                     />
                   ))}
                 </div>
@@ -113,7 +113,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto justify-center pt-2">
             <Button 
               size="lg" 
-              className="px-8 text-base h-12 bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white shadow-lg shadow-indigo-500/25 font-bold group"
+              className="px-8 text-base h-12 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 hover:opacity-95 text-white shadow-lg shadow-blue-500/25 font-bold group"
             >
               <Link href="/sign-up" className="flex items-center">
                 Get Your Free Link <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -142,11 +142,11 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="glass-card hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-3 right-3 text-4xl font-black text-indigo-500/10 group-hover:text-indigo-500/20 transition-colors">
+              <div className="absolute top-3 right-3 text-4xl font-black text-blue-500/10 group-hover:text-blue-500/20 transition-colors">
                 01
               </div>
               <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
                   <UserPlus className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg">Create Your Account</h3>
@@ -157,11 +157,11 @@ export default function Home() {
             </Card>
 
             <Card className="glass-card hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-3 right-3 text-4xl font-black text-purple-500/10 group-hover:text-purple-500/20 transition-colors">
+              <div className="absolute top-3 right-3 text-4xl font-black text-cyan-500/10 group-hover:text-cyan-500/20 transition-colors">
                 02
               </div>
               <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                   <Share2 className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg">Share Your Link</h3>
@@ -172,11 +172,11 @@ export default function Home() {
             </Card>
 
             <Card className="glass-card hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
-              <div className="absolute top-3 right-3 text-4xl font-black text-pink-500/10 group-hover:text-pink-500/20 transition-colors">
+              <div className="absolute top-3 right-3 text-4xl font-black text-teal-500/10 group-hover:text-teal-500/20 transition-colors">
                 03
               </div>
               <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-600 dark:text-pink-400">
+                <div className="w-12 h-12 rounded-2xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-400">
                   <Inbox className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg">Read Incoming Feed</h3>
@@ -190,8 +190,8 @@ export default function Home() {
 
         {/* Feature Highlights Grid */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full pt-10 border-t border-border/60">
-          <div className="p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-3 hover:border-indigo-500/40 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+          <div className="p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-3 hover:border-blue-500/40 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <Lock className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-lg">100% Privacy Guaranteed</h3>
@@ -200,8 +200,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-3 hover:border-purple-500/40 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
+          <div className="p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-3 hover:border-cyan-500/40 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
               <Bot className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-lg">AI Suggestion Helper</h3>
@@ -210,8 +210,8 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-3 hover:border-pink-500/40 transition-colors">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-600 dark:text-pink-400">
+          <div className="p-6 rounded-2xl bg-card border border-border/60 shadow-xs space-y-3 hover:border-teal-500/40 transition-colors">
+            <div className="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-600 dark:text-teal-400">
               <HeartHandshake className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-lg">Instant Toggle Control</h3>
@@ -227,7 +227,7 @@ export default function Home() {
       <footer className="w-full border-t border-border/60 bg-card/60 backdrop-blur-md py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+            <div className="w-6 h-6 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
               M
             </div>
             <span className="font-bold text-foreground">Mystery Message</span>
