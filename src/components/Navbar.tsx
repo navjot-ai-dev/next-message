@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { User } from 'next-auth';
 import { 
@@ -22,8 +23,12 @@ import {
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
+  const pathname = usePathname();
   const { data: session } = useSession();
   const user: User | undefined = session?.user;
+
+  // Check if current route is a public profile page (/u/[username])
+  const isPublicProfilePage = pathname?.startsWith('/u/');
 
   const [isLeftDrawerOpen, setIsLeftDrawerOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -61,19 +66,20 @@ const Navbar = () => {
       <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
-          {/* Left Container: Three Dots Button + Brand Logo */}
+          {/* Left Container: Three Dots Button (hidden on /u/[username]) + Brand Logo */}
           <div className="flex items-center gap-3">
-            {/* Three Dots Button for Left Drawer */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsLeftDrawerOpen(true)}
-              className="h-9 w-9 border-border/80 hover:bg-muted transition-colors rounded-xl shrink-0"
-              title="Open drawer menu"
-            >
-              <MoreVertical className="w-5 h-5 text-muted-foreground hover:text-foreground" />
-              <span className="sr-only">Open left menu drawer</span>
-            </Button>
+            {!isPublicProfilePage && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsLeftDrawerOpen(true)}
+                className="h-9 w-9 border-border/80 hover:bg-muted transition-colors rounded-xl shrink-0"
+                title="Open drawer menu"
+              >
+                <MoreVertical className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+                <span className="sr-only">Open left menu drawer</span>
+              </Button>
+            )}
 
             {/* Brand Logo */}
             <Link 
@@ -99,16 +105,19 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-3">
             {session ? (
               <div className="flex items-center gap-3">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="hover:bg-blue-500/10 hover:text-blue-600 font-medium"
-                >
-                  <Link href="/dashboard" className="flex items-center gap-2">
-                    <LayoutDashboard className="w-4 h-4 text-blue-500" />
-                    Dashboard
-                  </Link>
-                </Button>
+                {/* Dashboard button (hidden on /u/[username]) */}
+                {!isPublicProfilePage && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="hover:bg-blue-500/10 hover:text-blue-600 font-medium"
+                  >
+                    <Link href="/dashboard" className="flex items-center gap-2">
+                      <LayoutDashboard className="w-4 h-4 text-blue-500" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                )}
                 
                 {/* User Avatar Badge */}
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/80 border border-border/60 text-xs sm:text-sm font-medium shadow-xs">
@@ -118,16 +127,6 @@ const Navbar = () => {
                     {user?.username || user?.email}
                   </span>
                 </div>
-
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => signOut()}
-                  className="gap-2 border-border/80 hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive transition-colors"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Logout</span>
-                </Button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -150,11 +149,7 @@ const Navbar = () => {
 
           {/* Mobile Right Controls */}
           <div className="flex items-center gap-2 md:hidden">
-            {session ? (
-              <Button variant="outline" size="sm" onClick={() => signOut()} className="text-xs h-8 px-2.5">
-                Logout
-              </Button>
-            ) : (
+            {!session && (
               <Button size="sm" className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white text-xs h-8 px-2.5">
                 <Link href="/sign-in">Login</Link>
               </Button>
@@ -165,7 +160,7 @@ const Navbar = () => {
       </header>
 
       {/* Short Slide-Over Left Side Drawer */}
-      {isLeftDrawerOpen && (
+      {isLeftDrawerOpen && !isPublicProfilePage && (
         <div className="fixed inset-0 z-50 flex">
           {/* Backdrop Overlay */}
           <div 

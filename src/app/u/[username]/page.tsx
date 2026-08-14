@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios, { AxiosError } from "axios";
-import { Send, Sparkles, Loader2, MessageSquare, ShieldCheck } from "lucide-react";
+import { Send, Sparkles, Loader2, MessageSquare, ShieldCheck, LogIn, UserPlus } from "lucide-react";
 
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "@/components/ui/toast";
@@ -225,6 +226,31 @@ const PublicProfilePage = () => {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      {/* Create Your Own Link Callout Box */}
+      <div className="mt-8 text-center space-y-3 p-6 rounded-2xl bg-card/80 border border-border/80 shadow-md backdrop-blur-md">
+        <p className="text-sm sm:text-base font-bold text-foreground">
+          Want to receive anonymous messages like @{username}?
+        </p>
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          Create your account to get your own unique shareable feedback link in seconds.
+        </p>
+        <div className="flex items-center justify-center gap-3 pt-1">
+          <Button variant="outline" size="sm" className="h-9 px-4 font-medium">
+            <Link href="/sign-in" className="flex items-center gap-2">
+              <LogIn className="w-4 h-4 text-blue-500" />
+              <span>Sign In</span>
+            </Link>
+          </Button>
+
+          <Button size="sm" className="h-9 px-5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold shadow-xs">
+            <Link href="/sign-up" className="flex items-center gap-2">
+              <UserPlus className="w-4 h-4" />
+              <span>Get Your Own Link</span>
+            </Link>
+          </Button>
+        </div>
       </div>
 
     </div>
