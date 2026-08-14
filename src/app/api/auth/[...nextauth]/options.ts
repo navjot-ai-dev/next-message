@@ -17,7 +17,6 @@ export const authOptions: NextAuthOptions = {
         await dbConnect();
 
         try {
-          // Look for user by email OR username
           const user = await UserModel.findOne({
             $or: [
               { email: credentials.identifier },
@@ -30,7 +29,7 @@ export const authOptions: NextAuthOptions = {
           }
 
           if (!user.isVerified) {
-            throw new Error('Please verify your email before logging in');
+            throw new Error('Please verify your account before logging in');
           }
 
           const isMatch = await bcrypt.compare(
@@ -55,7 +54,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token._id = user._id?.toString();
         token.isVerified = user.isVerified;
-        token.isAcceptingMessages = user.isAcceptingMessages;
+        token.isAcceptingMessages = user.isAcceptingMessages; // Ensure schema field matches this exact name
         token.username = user.username;
       }
       return token;
