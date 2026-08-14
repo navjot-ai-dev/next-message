@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios, { AxiosError } from "axios";
-import { Send, Sparkles, Loader2, MessageSquare } from "lucide-react";
+import { Send, Sparkles, Loader2, MessageSquare, ShieldCheck, Heart } from "lucide-react";
 
 import { ApiResponse } from "@/types/ApiResponse";
 import { toast } from "@/components/ui/toast";
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 
 // Validation schema for sending a message
 const messageSchema = z.object({
@@ -42,6 +43,7 @@ const PublicProfilePage = () => {
   });
 
   const currentContent = watch("content") || "";
+  const charPercent = Math.min(100, Math.round((currentContent.length / 300) * 100));
 
   // Action: Send Message
   const onSubmit = async (data: MessageFormData) => {
@@ -53,8 +55,8 @@ const PublicProfilePage = () => {
       });
 
       toast.add({
-        title: "Message Sent! 🚀",
-        description: response.data.message || "Your anonymous message was delivered.",
+        title: "Message Delivered! 🚀",
+        description: response.data.message || "Your anonymous message was sent.",
       });
 
       // Clear input
@@ -83,8 +85,8 @@ const PublicProfilePage = () => {
       setSuggestions(list);
 
       toast.add({
-        title: "Suggestions Ready ✨",
-        description: "Click any suggestion below to insert it.",
+        title: "AI Suggestions Ready ✨",
+        description: "Click any suggestion below to fill your message.",
       });
     } catch (error) {
       toast.add({
@@ -102,98 +104,128 @@ const PublicProfilePage = () => {
 
   return (
     <div className="flex-1 flex flex-col justify-center max-w-2xl w-full mx-auto my-8 sm:my-16 px-4 sm:px-6">
-      <Card className="shadow-lg border-muted/80 bg-card">
-        <CardHeader className="text-center space-y-3 pb-4">
-          <div className="mx-auto w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-xs">
-            <MessageSquare className="w-6 h-6" />
-          </div>
-          <div className="space-y-1">
-            <CardTitle className="text-xl sm:text-2xl font-bold tracking-tight">
-              Send an Anonymous Message to @{username}
-            </CardTitle>
-            <CardDescription className="text-xs sm:text-sm">
-              They won't know who sent this. Keep it constructive and friendly!
-            </CardDescription>
-          </div>
-        </CardHeader>
+      
+      {/* Outer Gradient Card Frame */}
+      <div className="p-0.5 rounded-3xl bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 shadow-2xl">
+        <Card className="border-none bg-card/95 backdrop-blur-xl rounded-[23px] overflow-hidden">
+          
+          <CardHeader className="text-center space-y-3 pb-4 pt-8 bg-gradient-to-b from-primary/5 to-transparent">
+            
+            {/* Avatar Header Ring */}
+            <div className="relative mx-auto w-14 h-14">
+              <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-600 opacity-80 blur-xs" />
+              <div className="relative w-14 h-14 rounded-2xl bg-background border border-primary/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-md">
+                <MessageSquare className="w-7 h-7" />
+              </div>
+            </div>
 
-        <CardContent className="space-y-6">
-          {/* Message Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1.5">
-              <div className="relative">
-                <Textarea
-                  placeholder="Write your secret message here..."
-                  rows={4}
-                  className="resize-none text-sm sm:text-base p-3.5 focus-visible:ring-primary"
-                  {...register("content")}
-                />
-                <span className="absolute bottom-2.5 right-3 text-[11px] text-muted-foreground font-mono">
-                  {currentContent.length} / 300
-                </span>
-              </div>
-
-              {errors.content && (
-                <p className="text-xs text-destructive font-medium">{errors.content.message}</p>
-              )}
+              <CardTitle className="text-2xl sm:text-3xl font-black tracking-tight">
+                Send a Message to <span className="bg-gradient-to-r from-indigo-600 to-pink-600 bg-clip-text text-transparent">@{username}</span>
+              </CardTitle>
+              <CardDescription className="text-xs sm:text-sm flex items-center justify-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span>100% Anonymous. No registration required.</span>
+              </CardDescription>
             </div>
+          </CardHeader>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center">
-              {/* AI Suggestion Button */}
-              <Button
-                type="button"
-                variant="outline"
-                onClick={generateAiSuggestions}
-                disabled={isSuggesting}
-                className="w-full sm:w-auto h-10 gap-2"
-              >
-                {isSuggesting ? (
-                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                ) : (
-                  <Sparkles className="h-4 w-4 text-amber-500" />
-                )}
-                <span>Suggest with AI</span>
-              </Button>
-
-              {/* Submit Button */}
-              <Button type="submit" disabled={isSending || !currentContent.trim()} className="w-full sm:w-auto h-10 gap-2">
-                {isSending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                <span>Send Message</span>
-              </Button>
-            </div>
-          </form>
-
-          {/* AI Suggestions Display */}
-          {suggestions.length > 0 && (
-            <>
-              <Separator />
-              <div className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Tap a suggestion to use:
-                </p>
-                <div className="grid gap-2">
-                  {suggestions.map((item, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleSelectSuggestion(item)}
-                      className="p-3 text-left text-xs sm:text-sm rounded-lg border border-border/60 bg-muted/30 hover:bg-primary/5 hover:border-primary/40 transition-all border-dashed group"
-                    >
-                      <span className="text-muted-foreground group-hover:text-foreground italic">
-                        "{item}"
-                      </span>
-                    </button>
-                  ))}
+          <CardContent className="space-y-6 p-6 sm:p-8">
+            {/* Message Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="space-y-2">
+                <div className="relative">
+                  <Textarea
+                    placeholder="Write your secret message or feedback here..."
+                    rows={4}
+                    className="resize-none text-base p-4 rounded-xl border-border/80 focus-visible:ring-indigo-500 bg-muted/20"
+                    {...register("content")}
+                  />
+                  
+                  {/* Progress bar and counter */}
+                  <div className="flex items-center justify-between px-1 pt-1.5">
+                    <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full transition-all duration-300 ${charPercent > 90 ? 'bg-destructive' : 'bg-indigo-600'}`}
+                        style={{ width: `${charPercent}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-muted-foreground font-mono">
+                      {currentContent.length} / 300
+                    </span>
+                  </div>
                 </div>
+
+                {errors.content && (
+                  <p className="text-xs text-destructive font-semibold">{errors.content.message}</p>
+                )}
               </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-between items-stretch sm:items-center pt-1">
+                {/* AI Suggestion Button */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={generateAiSuggestions}
+                  disabled={isSuggesting}
+                  className="w-full sm:w-auto h-11 px-5 border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 font-semibold gap-2"
+                >
+                  {isSuggesting ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 text-amber-500" />
+                  )}
+                  <span>Suggest with AI</span>
+                </Button>
+
+                {/* Submit Button */}
+                <Button 
+                  type="submit" 
+                  disabled={isSending || !currentContent.trim()} 
+                  className="w-full sm:w-auto h-11 px-7 bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 hover:opacity-95 text-white font-bold shadow-lg shadow-indigo-500/25 gap-2"
+                >
+                  {isSending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
+                  <span>Send Anonymous Message</span>
+                </Button>
+              </div>
+            </form>
+
+            {/* AI Suggestions Display */}
+            {suggestions.length > 0 && (
+              <>
+                <Separator />
+                <div className="space-y-3">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Tap any prompt to use:
+                  </p>
+                  <div className="grid gap-2.5">
+                    {suggestions.map((item, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleSelectSuggestion(item)}
+                        className="p-3.5 text-left text-xs sm:text-sm rounded-xl border border-border/80 bg-muted/40 hover:bg-indigo-500/10 hover:border-indigo-500/40 transition-all border-dashed group flex items-start gap-2.5"
+                      >
+                        <Badge variant="outline" className="text-[10px] uppercase font-bold shrink-0 mt-0.5 border-indigo-500/30 text-indigo-600 dark:text-indigo-400">
+                          Idea #{idx + 1}
+                        </Badge>
+                        <span className="text-muted-foreground group-hover:text-foreground italic leading-relaxed">
+                          "{item}"
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
     </div>
   );
 };

@@ -13,7 +13,9 @@ import {
   Mail, 
   MessageSquare, 
   Power, 
-  Link as LinkIcon 
+  Link as LinkIcon,
+  Sparkles,
+  ExternalLink
 } from "lucide-react";
 
 import { Message } from "@/models/User";
@@ -84,7 +86,7 @@ const Dashboard = () => {
         setMessages(response.data.messages || []);
         if (refresh) {
           toast.add({
-            title: "Refreshed Messages",
+            title: "Refreshed Feed ✨",
             description: "Showing latest messages",
           });
         }
@@ -155,9 +157,12 @@ const Dashboard = () => {
 
   if (!session || !session.user) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-4 min-h-[60vh] text-center">
-        <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
-        <p className="text-muted-foreground max-w-sm">Please sign in to access your dashboard and manage messages.</p>
+      <div className="flex-1 flex flex-col items-center justify-center p-4 min-h-[60vh] text-center space-y-3">
+        <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center">
+          <Power className="w-6 h-6" />
+        </div>
+        <h1 className="text-2xl font-extrabold tracking-tight">Access Denied</h1>
+        <p className="text-muted-foreground max-w-sm text-sm">Please sign in to access your dashboard and manage messages.</p>
       </div>
     );
   }
@@ -169,8 +174,8 @@ const Dashboard = () => {
     navigator.clipboard.writeText(profileUrl);
     setCopied(true);
     toast.add({
-      title: "Copied to Clipboard",
-      description: "Profile URL copied successfully",
+      title: "Copied to Clipboard! 📋",
+      description: "Share your unique link anywhere.",
     });
     setTimeout(() => setCopied(false), 2000);
   };
@@ -178,12 +183,17 @@ const Dashboard = () => {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-6">
+      {/* Header Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Dashboard</h1>
-          <p className="text-sm sm:text-base text-muted-foreground mt-1">
-            Manage your unique link and incoming anonymous messages.
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight">Dashboard</h1>
+            <Badge variant="outline" className="border-indigo-500/30 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10">
+              Overview
+            </Badge>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1">
+            Welcome back, <span className="font-semibold text-foreground">@{username}</span>! Manage your feedback feed.
           </p>
         </div>
         
@@ -192,49 +202,55 @@ const Dashboard = () => {
           size="sm"
           onClick={() => fetchMessages(true)}
           disabled={isLoading}
-          className="w-full sm:w-auto h-9"
+          className="w-full sm:w-auto h-10 border-border/80 hover:border-indigo-500/40 font-medium gap-2"
         >
           {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
           ) : (
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="h-4 w-4 text-indigo-500" />
           )}
           Refresh Feed
         </Button>
       </div>
 
-      {/* Analytics Overview Cards */}
+      {/* Analytics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="shadow-xs border-muted/80">
+        
+        {/* Card 1: Total Messages */}
+        <Card className="glass-card shadow-xs border-border/60 relative overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Total Messages
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Total Inbox
             </CardTitle>
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
               <MessageSquare className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl sm:text-3xl font-extrabold">{messages.length}</div>
-            <p className="text-xs text-muted-foreground mt-1">Messages received to date</p>
+            <div className="text-3xl font-black tracking-tight">{messages.length}</div>
+            <p className="text-xs text-muted-foreground mt-1">Messages in your account</p>
           </CardContent>
         </Card>
 
-        <Card className="shadow-xs border-muted/80">
+        {/* Card 2: Status Toggle */}
+        <Card className="glass-card shadow-xs border-border/60 relative overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Message Acceptance
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Accepting Status
             </CardTitle>
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600 dark:text-purple-400">
               <Power className="h-4 w-4" />
             </div>
           </CardHeader>
           <CardContent className="flex items-center justify-between">
-            <div>
-              <Badge variant={acceptMessages ? "default" : "secondary"} className="mb-1">
-                {acceptMessages ? "Accepting Messages" : "Paused"}
-              </Badge>
-              <p className="text-xs text-muted-foreground">Toggle availability</p>
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                {acceptMessages && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
+                <Badge variant={acceptMessages ? "default" : "secondary"} className={acceptMessages ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}>
+                  {acceptMessages ? "Active & Accepting" : "Paused"}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground">Toggle link state</p>
             </div>
             <Switch
               checked={acceptMessages ?? false}
@@ -244,72 +260,92 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-xs border-muted/80 sm:col-span-2 lg:col-span-1">
+        {/* Card 3: Profile Link Preview */}
+        <Card className="glass-card shadow-xs border-border/60 sm:col-span-2 lg:col-span-1 relative overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Your Public URL
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Public Link
             </CardTitle>
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <div className="w-9 h-9 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-600 dark:text-pink-400">
               <LinkIcon className="h-4 w-4" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-xs font-mono text-muted-foreground truncate bg-muted/40 p-2 rounded-md border border-border/40">
+          <CardContent className="space-y-2">
+            <div className="text-xs font-mono text-muted-foreground truncate bg-muted/60 p-2 rounded-md border border-border/40">
               {profileUrl}
             </div>
+            <a 
+              href={profileUrl} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+            >
+              <span>Preview your public page</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
           </CardContent>
         </Card>
       </div>
 
       {/* Shareable Link Box */}
-      <Card className="bg-card border-dashed border-primary/30 shadow-xs">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base sm:text-lg font-semibold flex items-center gap-2">
-            <LinkIcon className="w-4 h-4 text-primary" />
-            Your Shareable Feedback Link
-          </CardTitle>
-          <CardDescription>
-            Share this link on social media or with friends to receive anonymous feedback.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
-            <Input
-              type="text"
-              value={profileUrl}
-              readOnly
-              className="bg-muted/20 font-mono text-xs sm:text-sm h-10 flex-1"
-            />
-            <Button onClick={copyToClipboard} variant="default" className="shrink-0 h-10 px-5">
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4 mr-2" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4 mr-2" />
-                  Copy Link
-                </>
-              )}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="p-0.5 rounded-2xl bg-gradient-to-r from-indigo-500/30 via-purple-500/30 to-pink-500/30 shadow-md">
+        <Card className="border-none bg-card/90 backdrop-blur-xl rounded-[15px]">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base sm:text-lg font-bold flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              Your Shareable Feedback Link
+            </CardTitle>
+            <CardDescription>
+              Copy and post this unique link on your social media profiles to receive anonymous thoughts!
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
+              <Input
+                type="text"
+                value={profileUrl}
+                readOnly
+                className="bg-muted/40 font-mono text-xs sm:text-sm h-11 flex-1 border-border/80 focus-visible:ring-indigo-500"
+              />
+              <Button 
+                onClick={copyToClipboard} 
+                className="shrink-0 h-11 px-6 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold shadow-md shadow-indigo-500/20"
+              >
+                {copied ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy Link
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Separator className="my-6" />
 
       {/* Messages Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg sm:text-xl font-bold tracking-tight">Received Messages ({messages.length})</h2>
+          <h2 className="text-lg sm:text-xl font-bold tracking-tight flex items-center gap-2">
+            <span>Received Messages</span>
+            <Badge variant="secondary" className="font-mono text-xs">
+              {messages.length}
+            </Badge>
+          </h2>
         </div>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Skeleton className="h-40 w-full rounded-xl" />
-            <Skeleton className="h-40 w-full rounded-xl" />
-            <Skeleton className="h-40 w-full rounded-xl" />
+            <Skeleton className="h-44 w-full rounded-2xl" />
+            <Skeleton className="h-44 w-full rounded-2xl" />
+            <Skeleton className="h-44 w-full rounded-2xl" />
           </div>
         ) : messages.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -326,18 +362,22 @@ const Dashboard = () => {
             })}
           </div>
         ) : (
-          <div className="text-center py-12 px-4 border border-dashed rounded-xl bg-muted/10 space-y-3">
-            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground mx-auto">
-              <Mail className="h-6 w-6 opacity-70" />
+          <div className="text-center py-16 px-4 border border-dashed rounded-2xl bg-muted/20 space-y-4">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto shadow-xs">
+              <Mail className="h-7 w-7" />
             </div>
             <div className="space-y-1">
-              <p className="text-base font-semibold text-foreground">No messages yet</p>
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto">
-                Share your link with your network to start receiving anonymous feedback and questions!
+              <p className="text-lg font-bold text-foreground">No messages yet</p>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-sm mx-auto leading-relaxed">
+                Share your unique link with your audience or social media followers to start receiving secret feedback!
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={copyToClipboard} className="mt-2">
-              <Copy className="h-3.5 w-3.5 mr-2" />
+            <Button 
+              onClick={copyToClipboard} 
+              variant="outline"
+              className="mt-2 border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10 font-semibold"
+            >
+              <Copy className="h-4 w-4 mr-2" />
               Copy Shareable Link
             </Button>
           </div>
