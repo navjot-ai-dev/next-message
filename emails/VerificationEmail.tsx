@@ -182,7 +182,7 @@ export const OTPEmail = ({
             </Row>
 
             <Text className="expiry">
-              This code expires in {expiresInMinutes} minutes.
+              This code expires in {expiresInMinutes} minutes. Please check fast.
             </Text>
 
             <Hr className="divider" />
