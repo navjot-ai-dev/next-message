@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import dns from "dns/promises";
+// import dns from "dns/promises";
 
-dns.setServers(["10.37.221.136"]);
+// dns.setServers(["10.37.221.136"]);
 
 type ConnectionObject = {
   isConnected?: number;
